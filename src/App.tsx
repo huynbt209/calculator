@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Tooltip, InputNumber, type InputNumberProps } from 'antd';
 
 interface Item {
   name: string;
@@ -25,7 +26,7 @@ export default function App() {
   };
 
   const removeItem = (index: number) => {
-    if (items.length === 1) return; // không xóa dòng cuối
+    if (items.length === 1) return;
     setItems(items.filter((_, i) => i !== index));
   };
 
@@ -33,7 +34,6 @@ export default function App() {
   const toNum = (value: number | string): number =>
     value === "" ? 0 : Number(value);
 
-  // Tính toán
   const subtotal = items.reduce(
     (sum, item) => sum + toNum(item.price) * toNum(item.qty),
     0
@@ -55,13 +55,20 @@ export default function App() {
 
   const grandTotal = afterProductDiscount - billDiscountAmount;
 
+  const formatter: InputNumberProps<number>['formatter'] = (value) => {
+      const [start, end] = `${value}`.split('.') || [];
+      const v = `${start}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      return `$ ${end ? `${v}.${end}` : `${v}`}`;
+    };
+
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-3xl mx-auto bg-white shadow-xl rounded-xl p-6">
         <h1 className="text-2xl font-bold mb-6">Tính toán đơn hàng</h1>
 
         {/* ITEM LIST */}
-        <div className="space-y-4">
+        <div className="flex border rounded-xl bg-gray-50 shadow-sm justify-between">
+          <div className="flex-1 p-5">
           {items.map((item, idx) => (
             <div
               key={idx}
@@ -69,7 +76,6 @@ export default function App() {
             >
               <div className="flex justify-between items-center mb-3">
                 <h2 className="font-semibold text-lg">Sản phẩm {idx + 1}</h2>
-
                 {idx > 0 && (
                   <button
                     onClick={() => removeItem(idx)}
@@ -81,60 +87,72 @@ export default function App() {
               </div>
 
               {/* ONE LINE INPUT */}
-              <div className="grid grid-cols-4 gap-3">
+              <div className="grid grid-cols-3 gap-3">
                 {/* Price */}
                 <div>
-                  <label className="text-sm">Giá</label>
-                  <input
-                    type="number"
-                    step="0.01"
+                  <Tooltip title="Giá gốc của sản phẩm">
+                    <label className="text-sm">Giá Gốc</label>
+                  </Tooltip>
+                  
+                  <InputNumber<number>
+                    style={{ width: '100%' }}
+                    formatter={formatter}
                     className="w-full border rounded px-2 py-1 mt-1"
-                    value={item.price}
+                    parser={(value) => value?.replace(/\$\s?|(,*)/g, '') as unknown as number}
                     onChange={(e) =>
-                      updateItem(idx, "price", e.target.value)
-                    }
+                                    updateItem(idx, "price", e?.toString() ?? "")
+                                  }
                   />
                 </div>
 
                 {/* Qty */}
-                <div>
-                  <label className="text-sm">Số lượng</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    className="w-full border rounded px-2 py-1 mt-1"
-                    value={item.qty}
+                <div className="flex flex-col">
+                  <label className="text-sm">Số lượng</label>                
+
+                  <InputNumber<number>
+                    min={0}
+                    max={100}
+                    style={{ width: '100%' }}
+                    className="border rounded px-2 py-1"
+                    parser={(value) => value?.replace('%', '') as unknown as number}
                     onChange={(e) =>
-                      updateItem(idx, "qty", e.target.value)
+                      updateItem(idx, "qty", e?.toString() ?? "")
                     }
                   />
                 </div>
 
                 {/* Discount */}
                 <div>
-                  <label className="text-sm">Discount (%)</label>
-                  <input
-                    type="number"
-                    step="0.01"
+                  <Tooltip title="% Discount cho mỗi sản phẩm">
+                    <label className="text-sm">Discount/SP (%)</label>
+                  </Tooltip>
+                  
+                  <InputNumber<number>
+                    style={{ width: '100%' }}
+                    min={0}
+                    max={100}
                     className="w-full border rounded px-2 py-1 mt-1"
-                    value={item.discount}
+                    formatter={(value) => `${value}%`}
+                    parser={(value) => value?.replace('%', '') as unknown as number}
                     onChange={(e) =>
-                      updateItem(idx, "discount", e.target.value)
+                      updateItem(idx, "discount", e?.toString() ?? "")
                     }
                   />
                 </div>
+                
               </div>
             </div>
           ))}
-        </div>
-
-        {/* ADD ITEM BUTTON */}
-        <button
-          onClick={addItem}
-          className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-        >
-          + Thêm sản phẩm
-        </button>
+          </div>
+          <div className="space-y-4 mt-7 p-5">
+            <button
+              onClick={addItem}
+              className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+            >
+              + Thêm
+            </button>
+          </div>
+        </div>        
 
         {/* BILL DISCOUNT */}
         <div className="mt-6">

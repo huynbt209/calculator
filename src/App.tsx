@@ -75,7 +75,7 @@ export default function App() {
               className="p-4 border rounded-xl bg-gray-50 shadow-sm"
             >
               <div className="flex justify-between items-center mb-3">
-                <h2 className="font-semibold text-lg">Sản phẩm {idx + 1}</h2>
+                <h2 className="font-semibold text-lg">{item.name + " " + (idx + 1)}</h2>
                 {idx > 0 && (
                   <button
                     onClick={() => removeItem(idx)}

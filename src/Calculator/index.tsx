@@ -1,0 +1,57 @@
+import React, { useState } from "react";
+import { Button } from 'antd';
+
+const Calculator : React.FC = () => {
+
+    const [calcInput, setCalcInput] = useState("");
+    const [calcResult, setCalcResult] = useState("");
+
+    const handleCalculate = () => {
+      try {
+        const expression = calcInput.replace(/(\d+(\.\d+)?)%/g, (_, num) => `${num}/100`);
+
+        // eslint-disable-next-line no-eval
+        const result = eval(expression);
+
+        setCalcResult(result?.toString() ?? "");
+      } catch {
+        setCalcResult("Lỗi biểu thức");
+      }
+    };
+
+    return (
+        <div>
+            <h2 className="text-xl font-bold mb-4">Máy tính nè</h2>
+            <span className="text-sm text-gray-500">Ví dụ: 50000*1 - (50000*20%) / 100</span>
+            <input
+              type="text"
+              placeholder="nhập"
+              className="p-3 border rounded w-full"
+              value={calcInput}
+              onChange={(e) => {
+                const value = e.target.value;
+                const allowed = /^[0-9+\-*/%(). ]*$/;
+                if (allowed.test(value)) setCalcInput(value);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleCalculate();
+              }}
+            />
+        
+            <Button
+              onClick={handleCalculate}
+              color="cyan" variant="filled"
+              className="mt-3 justify-center w-md bg-green-600 text-white py-2 rounded"
+            >
+              Tính
+            </Button>
+          
+            <div className="mt-4">
+              <p className="font-medium">Kết quả:</p>
+              <p className="text-2xl font-bold mt-1">{calcResult}</p>
+            </div>
+        </div>
+    );
+}
+
+export default Calculator;

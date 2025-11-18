@@ -51,6 +51,12 @@ const CalculateInvoice = () => {
     setItems(items.filter((_, i) => i !== index));
   };
 
+  const clear = () => {
+    setItems([{ name: "", price: "", qty: 1, discount: "", totalDiscount: "", total: "" }]);
+    setBillDiscount("");
+    setBillDiscountPrice("");
+  }
+
   // Convert safely to number
   const toNum = (value: number | string): number =>
     value === "" ? 0 : Number(value);
@@ -107,6 +113,18 @@ const CalculateInvoice = () => {
             <div className="border border-gray-300 rounded-xl bg-gray-50 p-6">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg font-semibold text-gray-700">Danh sách sản phẩm</h2>
+
+                {items.find((item) => item.price !== "" && toNum(item.price) > 0) && (
+                  <Button
+                    type="primary" 
+                    danger
+                    onClick={clear}
+                    className="px-4 py-2 rounded-md shadow text-white hover:bg-teal-600"
+                  >
+                    Clear
+                  </Button>
+                )}
+                
         
                 <Button
                   color="cyan"
@@ -116,6 +134,8 @@ const CalculateInvoice = () => {
                 >
                   + Thêm sản phẩm
                 </Button>
+
+                
               </div>
         
               {/* Item Blocks */}
@@ -152,6 +172,7 @@ const CalculateInvoice = () => {
                       <InputNumber<number>
                         style={{ width: "100%" }}
                         formatter={formatter}
+                        value={toNum(item.price)}
                         className="mt-1 w-full"
                         min={0}
                         onChange={(e) =>

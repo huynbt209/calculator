@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Button } from 'antd';
+import { Button, Input } from 'antd';
 
+const { TextArea } = Input;
 const Calculator : React.FC = () => {
 
     const [calcInput, setCalcInput] = useState("");
@@ -23,8 +24,9 @@ const Calculator : React.FC = () => {
         <div>
             <h2 className="text-xl font-bold mb-4">Máy tính nè</h2>
             <span className="text-sm text-gray-500">Ví dụ: 50000*1 - (50000*20%) / 100</span>
-            <input
-              type="text"
+            <TextArea
+              rows={4}
+              
               placeholder="nhập"
               className="p-3 border rounded w-full"
               value={calcInput}

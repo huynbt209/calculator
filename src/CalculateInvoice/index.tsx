@@ -12,7 +12,7 @@ interface Item {
 
 const CalculateInvoice = () => {
     const [items, setItems] = useState<Item[]>([
-    { name: "", price: "", qty: 1, discount: "", totalDiscount: "", total: "" },
+    { name: "", price: "", qty: 0, discount: "", totalDiscount: "", total: "" },
   ]);
 
   const [billDiscount, setBillDiscount] = useState<number | string>("");
@@ -52,7 +52,7 @@ const CalculateInvoice = () => {
   };
 
   const clear = () => {
-    setItems([{ name: "", price: "", qty: 1, discount: "", totalDiscount: "", total: "" }]);
+    setItems([{ name: "", price: "", qty: 0, discount: "", totalDiscount: "", total: "" }]);
     setBillDiscount("");
     setBillDiscountPrice("");
   }
@@ -106,7 +106,7 @@ const CalculateInvoice = () => {
     return (
         <div>
             <div className="min-h-screen bg-gray-100 p-8">
-              <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-2xl p-8 border border-gray-200">
+              <div className="max-w-6xl mx-auto bg-white shadow-lg rounded-2xl p-8 border border-gray-200">
                 <h1 className="text-3xl font-bold mb-8 text-gray-700">Tính toán đơn hàng</h1>
 
             {/* ITEM LIST */}

@@ -12,7 +12,7 @@ interface Item {
 
 const CalculateInvoice = () => {
     const [items, setItems] = useState<Item[]>([
-    { name: "", price: "", qty: 0, discount: "", totalDiscount: "", total: "" },
+    { name: "", price: "", qty: 0, discount: 0, totalDiscount: 0, total: "" },
   ]);
 
   const [billDiscount, setBillDiscount] = useState<number | string>("");
@@ -26,12 +26,13 @@ const CalculateInvoice = () => {
     const price = toNum(newItems[index].price);
     const qty = toNum(newItems[index].qty);
     
-    const totalDiscount = toNum(newItems[index].totalDiscount);    
+     
 
     if(key === 'totalDiscount' || key === 'discount') {
       if(key === 'totalDiscount')
       {
-        newItems[index].discount = ((totalDiscount / (price * qty)) * 100).toFixed(2);
+        const totalDiscount = toNum(newItems[index].totalDiscount) ?? 0;   
+        newItems[index].discount = ((totalDiscount / (price * qty)) * 100).toFixed(2) ?? 0;
       }
 
       const discount = toNum(newItems[index].discount);
@@ -42,7 +43,6 @@ const CalculateInvoice = () => {
     
     else
     {
-      newItems[index].discount = ((totalDiscount / (price * qty)) * 100).toFixed(2);
       newItems[index].totalDiscount = price * qty * ((toNum(newItems[index].discount)) / 100);
     }
     
@@ -52,7 +52,7 @@ const CalculateInvoice = () => {
   };
 
   const addItem = () => {
-    setItems([...items, { name: "", price: "", qty: 1, discount: "", totalDiscount: "", total: "" }]);
+    setItems([...items, { name: "", price: "", qty: 1, discount: 0, totalDiscount: 0, total: "" }]);
   };
 
   const removeItem = (index: number) => {
@@ -61,7 +61,7 @@ const CalculateInvoice = () => {
   };
 
   const clear = () => {
-    setItems([{ name: "", price: "", qty: 0, discount: "", totalDiscount: "", total: "" }]);
+    setItems([{ name: "", price: "", qty: 0, discount: 0, totalDiscount: 0, total: "" }]);
     setBillDiscount("");
     setBillDiscountPrice("");
   }
@@ -106,6 +106,8 @@ const CalculateInvoice = () => {
   const billDiscountAmount = billPercentDiscount > 0 ? afterProductDiscount * (billPercentDiscount / 100) : billDiscountPriceNum;
 
   const total = totalPrice - billDiscountAmount;
+
+  console.log(items, "items")
 
   const formatter: InputNumberProps<number>['formatter'] = (value) => {
       const [start, end] = `${value}`.split('.') || [];
@@ -218,7 +220,7 @@ const CalculateInvoice = () => {
                         style={{ width: "100%" }}
                         min={0}
                         max={100}
-                        value={toNum(item.discount)}
+                        value={toNum(item.discount) ?? 0}
                         className="mt-1 w-full"
                         formatter={(v) => `${v}%`}
                         parser={(v) => v?.replace("%", "") as unknown as number}
@@ -236,7 +238,7 @@ const CalculateInvoice = () => {
                       
                       <InputNumber<number>
                         style={{ width: "100%" }}
-                        value={toNum(item.totalDiscount)}
+                        value={toNum(item.totalDiscount) ?? 0}
                         formatter={formatter}
                         className="mt-1 w-full"
                         onChange={(e) =>

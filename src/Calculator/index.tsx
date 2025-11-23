@@ -14,11 +14,16 @@ const Calculator : React.FC = () => {
         // eslint-disable-next-line no-eval
         const result = eval(expression);
 
-        setCalcResult(result?.toString() ?? "");
+        setCalcResult(result?.toLocaleString() ?? "");
       } catch {
         setCalcResult("Lỗi biểu thức");
       }
     };
+
+    const clear = () => {
+        setCalcInput("");
+        setCalcResult("");
+    }
 
     return (
         <div>
@@ -43,14 +48,22 @@ const Calculator : React.FC = () => {
             <Button
               onClick={handleCalculate}
               color="cyan" variant="filled"
-              className="mt-3 justify-center w-md bg-green-600 text-white py-2 rounded"
+              className="mt-3 justify-center w-xs bg-green-600 text-white py-2 rounded"
             >
               Tính
+            </Button>            
+            
+            <Button
+              onClick={clear}
+              type="primary" danger
+              className="mt-3 justify-center w-xs text-white py-2 rounded"
+            >
+              Clear
             </Button>
           
             <div className="mt-4">
               <p className="font-medium">Kết quả:</p>
-              <p className="text-2xl font-bold mt-1">{calcResult}</p>
+              <p className="text-2xl font-bold mt-1">{calcResult.toLocaleString()}</p>
             </div>
         </div>
     );

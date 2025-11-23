@@ -28,13 +28,22 @@ const CalculateInvoice = () => {
     
     const totalDiscount = toNum(newItems[index].totalDiscount);    
 
-    if(key === 'totalDiscount') {
-      newItems[index].discount = ((totalDiscount / (price * qty)) * 100).toFixed(2);
-    }
+    if(key === 'totalDiscount' || key === 'discount') {
+      if(key === 'totalDiscount')
+      {
+        newItems[index].discount = ((totalDiscount / (price * qty)) * 100).toFixed(2);
+      }
 
-    const discount = toNum(newItems[index].discount);
-    if(key === 'discount') {
+      const discount = toNum(newItems[index].discount);
+      if(key === 'discount') {
       newItems[index].totalDiscount = price * qty * (discount / 100);
+      }
+    }
+    
+    else
+    {
+      newItems[index].discount = ((totalDiscount / (price * qty)) * 100).toFixed(2);
+      newItems[index].totalDiscount = price * qty * ((toNum(newItems[index].discount)) / 100);
     }
     
     newItems[index].total = price * qty - toNum(newItems[index].totalDiscount);
